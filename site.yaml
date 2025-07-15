@@ -1,7 +1,25 @@
 ---
-- hosts: workers
-  become: true
+- name: Ensure chrony is installed and configured on Ubuntu 24.04
+  hosts: workers
+  become: yes
   tasks:
-    - name: Print OS info
-      ansible.builtin.package:
+
+    - name: Install chrony if not already installed
+      apt:
         name: chrony
+        state: present
+        update_cache: yes
+
+    - name: Ensure custom server line exists above pool entries in chrony.conf
+      blockinfile:
+        path: /etc/chrony/chrony.conf
+        marker: "# {mark} MANAGED BY ANSIBLE"
+        insertafter: BOF
+        block: |
+          server 10.0.17.77 iburst prefer
+
+    - name: Restart chrony service
+      service:
+        name: chrony
+        state: restarted
+
