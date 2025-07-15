@@ -1,0 +1,7 @@
+---
+- hosts: workers
+  become: true
+  tasks:
+    - name: Print OS info
+      ansible.builtin.package:
+        name: chrony
