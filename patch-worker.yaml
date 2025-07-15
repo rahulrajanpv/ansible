@@ -1,5 +1,5 @@
 ---
-- name: Safely patch all worker nodes
+- name: Safely patch all worker nodes (no dist-upgrade)
   hosts: workers
   become: yes
   tasks:
@@ -9,6 +9,7 @@
         update_cache: yes
         cache_valid_time: 3600
 
-    - name: Upgrade all packages to latest version (safe mode)
+    - name: Upgrade installed packages only (safe mode)
       apt:
-        upgrade: dist
+        upgrade: yes
+
